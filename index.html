@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js" integrity="sha512-rCZdHNB0AePry6kAnKAVFMRfWPmUXSo+/vlGtrOUvhsxD0Punm/xWbEh+8vppPIOzKB9xnk42yCRZ5MD/jvvjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Tetris p5.js</title>
+</head>
+<body>
+    <script>
+        class Block {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+            draw() {
+                push();
+                let s = 25;
+                rect(s * this.x, s*this.y, s, s)
+                pop();
+            }
+        }
+        class Mino {
+            constructor(x, y, rot, shape) {
+                this.x = x;
+                this.y = y;
+                this.rot = rot;
+                this.shape = shape;
+            }
+        }
+        class Field {
+            constructor() {
+                this.tiles = [
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,1,1,1,1,1,1,1,1,1,1,1],
+                ];
+            }
+            tileAt(x, y) {
+                return this.tiles[y][x];
+            }
+            draw() {
+                for (let y=0; y < 21; y++) {
+                    for (let x=0; x< 12; x++) {
+                        if (this.tileAt(x, y) === 0) continue;
+                        new Block(x,y).draw();
+                    }
+                }
+            }
+        }
+        function setup() {
+            createCanvas(400, 600);
+            background(64);
+            new Field().draw();
+        }
+    </script>
+</body>
+</html>
