@@ -28,6 +28,25 @@
                 this.rot = rot;
                 this.shape = shape;
             }
+            calcBlocks() {
+                let blocks = [
+                    new Block(-1, 0),
+                    new Block(0, 0),
+                    new Block(0, -1),
+                    new Block(1, 0),
+                ];
+                for (let r=0; r<this.rot; r++) {
+                    blocks = blocks.map(b => new Block(-b.y, b.x));
+                }
+                return blocks;
+            }
+            draw() {
+                const blocks = this.calcBlocks();
+                blocks.forEach(b => (b.x += this.x, b.y += this.y));
+                for (let b of blocks) {
+                    b.draw();
+                }
+            }
         }
         class Field {
             constructor() {
@@ -70,7 +89,7 @@
         function setup() {
             createCanvas(400, 600);
             background(64);
-            new Field().draw();
+            // new Field().draw();
         }
     </script>
 </body>
