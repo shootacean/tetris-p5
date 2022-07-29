@@ -48,6 +48,9 @@
                     b.draw();
                 }
             }
+            copy() {
+              return new Mino(this.x, this.y, this.rot, this.shape);
+            }
         }
         class Field {
             constructor() {
@@ -95,9 +98,18 @@
             this.field = new Field();
             this.fc = 0;
           }
+          static isMinoMovable(mino, field) {
+            let blocks = mino.calcBlocks();
+            return blocks.every(b => field.tileAt(b.x, b.y) === 0);
+          }
           proc() {
             if (this.minoVx !== 0) {
-              this.mino.x += this.minoVx;
+              console.debug(this.minoVx);
+              let futureMino = this.mino.copy();
+              futureMino.x += this.minoVx;
+              if (Game.isMinoMovable(futureMino, this.field)) {
+                this.mino.x += this.minoVx;
+              }
               this.minoVx = 0;
             }
 
