@@ -37,13 +37,14 @@
                 ];
                 let rot = (40000000 + this.rot) % 4;
                 for (let r = 0; r < rot; r++) {
+                    // rotate 90
                     blocks = blocks.map(b => new Block(-b.y, b.x));
                 }
+                blocks.forEach(b => (b.x += this.x, b.y += this.y));              
                 return blocks;
             }
             draw() {
                 const blocks = this.calcBlocks();
-                blocks.forEach(b => (b.x += this.x, b.y += this.y));
                 for (let b of blocks) {
                     b.draw();
                 }
