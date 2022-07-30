@@ -99,6 +99,7 @@
           constructor() {
             this.mino = new Mino(5, 10, 0, 0);
             this.minoVx = 0;
+            this.minoVr = 0;
             this.field = new Field();
             this.fc = 0;
           }
@@ -132,6 +133,16 @@
               this.minoVx = 0;
             }
 
+            // 回転
+            if (this.minoVr !== 0) {
+              let futureMino = this.mino.copy();
+              futureMino.rot += this.minoVr;
+              if (Game.isMinoMovable(futureMino, this.field)) {
+                this.mino.rot += this.minoVr;
+              }
+              this.minoVr = 0;
+            }
+
             background(64);
             this.mino.draw();
             this.field.draw();
@@ -144,6 +155,8 @@
         function keyPressed() {
           if (keyCode === 65) game.minoVx = -1;
           if (keyCode === 68) game.minoVx = 1;
+          if (keyCode === 81) game.minoVr = -1;
+          if (keyCode === 69) game.minoVr = 1;
         }
 
         function setup() {
