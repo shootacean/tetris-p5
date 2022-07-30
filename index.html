@@ -80,15 +80,18 @@
                 ];
             }
             tileAt(x, y) {
-                return this.tiles[y][x];
+              return this.tiles[y][x];
+            }
+            putBlock(x, y) {
+              return this.tiles[y][x] = 1;
             }
             draw() {
-                for (let y=0; y < 21; y++) {
-                    for (let x=0; x< 12; x++) {
-                        if (this.tileAt(x, y) === 0) continue;
-                        new Block(x,y).draw();
-                    }
+              for (let y=0; y < 21; y++) {
+                for (let x=0; x< 12; x++) {
+                  if (this.tileAt(x, y) === 0) continue;
+                  new Block(x,y).draw();
                 }
+              }
             }
         }
 
@@ -104,8 +107,23 @@
             return blocks.every(b => field.tileAt(b.x, b.y) === 0);
           }
           proc() {
+            // 落下
+            if ( this.fc % 20 === 19) {
+              let futureMino = this.mino.copy();
+              futureMino.y += 1;
+              if (Game.isMinoMovable(futureMino, this.field)) {
+                this.mino.y += 1;
+              } else {
+                // 接地
+                for (let b of this.mino.calcBlocks()) {
+                  this.field.putBlock( b.x, b.y);
+                  this.mino = new Mino(5, 10, 0, 0);
+                }
+              }
+            }
+
+            // 左右移動
             if (this.minoVx !== 0) {
-              console.debug(this.minoVx);
               let futureMino = this.mino.copy();
               futureMino.x += this.minoVx;
               if (Game.isMinoMovable(futureMino, this.field)) {
