@@ -89,6 +89,17 @@
             putBlock(x, y) {
               return this.tiles[y][x] = 1;
             }
+            findLineFilled() {
+              for(let y=0; y<20; y++) {
+                let isFilled = this.tiles[y].every(t => t === 1);
+                if (isFilled) return y;
+              }
+              return -1;
+            }
+            cutLine(y) {
+              this.tiles.splice(y, 1);
+              this.tiles.unshift([1,0,0,0,0,0,0,0,0,0,0,1])
+            }
             draw() {
               for (let y=0; y < 21; y++) {
                 for (let x=0; x< 12; x++) {
@@ -126,6 +137,11 @@
                 for (let b of this.mino.calcBlocks()) {
                   this.field.putBlock( b.x, b.y);
                   this.mino = Game.makeMino();
+                }
+                // 消去
+                let line;
+                while((line = this.field.findLineFilled()) !== -1) {
+                  this.field.cutLine(line);
                 }
               }
             }
