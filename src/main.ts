@@ -185,7 +185,7 @@ const s = (p: p5) => {
     }
 
     static makeMino() {
-      return new Mino(5, 10, 0, p.floor(p.random(0, 7)));
+      return new Mino(5, 2, 0, p.floor(p.random(0, 7)));
     }
 
     static isMinoMovable(mino: Mino, field: Field) {
