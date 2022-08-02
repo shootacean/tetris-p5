@@ -1,5 +1,21 @@
 import p5 from "p5";
 
+type MinoShapeCodeT = 0;
+type MinoShapeCodeZ = 1;
+type MinoShapeCodeS = 2;
+type MinoShapeCodeL = 3;
+type MinoShapeCodeJ = 4;
+type MinoShapeCodeO = 5;
+type MinoShapeCodeI = 6;
+type MinoShapeCode =
+  | MinoShapeCodeT
+  | MinoShapeCodeZ
+  | MinoShapeCodeS
+  | MinoShapeCodeL
+  | MinoShapeCodeJ
+  | MinoShapeCodeO
+  | MinoShapeCodeI;
+
 /**
  * テトラミノを構成するブロック要素
  */
@@ -20,7 +36,7 @@ class Block {
 
   /**
    * ブロックを描画する
-   * @param p 
+   * @param p
    */
   draw(p: p5): void {
     p.push();
@@ -49,9 +65,9 @@ class Mino {
   /**
    * ミノの形
    */
-  shape: number;
+  shape: MinoShapeCode;
 
-  constructor(x: number, y: number, rot: number, shape: number) {
+  constructor(x: number, y: number, rot: number, shape: MinoShapeCode) {
     this.x = x;
     this.y = y;
     this.rot = rot;
@@ -60,7 +76,7 @@ class Mino {
 
   /**
    * ミノを構成しているブロックを演算する
-   * @returns 
+   * @returns
    */
   calcBlocks() {
     let blocks: Block[] = [];
@@ -133,7 +149,7 @@ class Mino {
 
   /**
    * ミノをコピーする
-   * @returns 
+   * @returns
    */
   copy(): Mino {
     return new Mino(this.x, this.y, this.rot, this.shape);
@@ -141,7 +157,7 @@ class Mino {
 
   /**
    * ミノを描画する
-   * @param p 
+   * @param p
    */
   draw(p: p5): void {
     const blocks = this.calcBlocks();
@@ -185,9 +201,9 @@ class Field {
 
   /**
    * フィールド内の１タイルを取得する
-   * @param x 
-   * @param y 
-   * @returns 
+   * @param x
+   * @param y
+   * @returns
    */
   tileAt(x: number, y: number): number {
     return this.tiles[y][x];
@@ -195,9 +211,9 @@ class Field {
 
   /**
    * フィールドにブロックを置く
-   * @param x 
-   * @param y 
-   * @returns 
+   * @param x
+   * @param y
+   * @returns
    */
   putBlock(x: number, y: number): number {
     return (this.tiles[y][x] = 1);
@@ -205,7 +221,7 @@ class Field {
 
   /**
    * 消去できる行インデックスを取得する
-   * @returns 
+   * @returns
    */
   findLineFilled(): number {
     for (let y = 0; y < 20; y++) {
@@ -217,7 +233,7 @@ class Field {
 
   /**
    * 行を削除して1行詰める
-   * @param y 
+   * @param y
    */
   cutLine(y: number) {
     this.tiles.splice(y, 1);
@@ -226,7 +242,7 @@ class Field {
 
   /**
    * フィールドを描画する
-   * @param p 
+   * @param p
    */
   draw(p: p5): void {
     for (let y = 0; y < 21; y++) {
@@ -273,18 +289,27 @@ export class Game {
 
   /**
    * 新しいミノを生成する
+   * @param p
+   * @returns
+   */
+  static makeMino(p: p5): Mino {
+    return new Mino(5, 2, 0, this.randomShape(p));
+  }
+
+  /**
+   * ランダムにミノの形を決める
    * @param p 
    * @returns 
    */
-  static makeMino(p: p5): Mino {
-    return new Mino(5, 2, 0, p.floor(p.random(0, 7)));
+  static randomShape(p: p5): MinoShapeCode {
+    return p.floor(p.random(0, 7)) as MinoShapeCode;
   }
 
   /**
    * ミノが移動可能かを判定する
-   * @param mino 
-   * @param field 
-   * @returns 
+   * @param mino
+   * @param field
+   * @returns
    */
   static isMinoMovable(mino: Mino, field: Field): boolean {
     let blocks = mino.calcBlocks();
@@ -293,7 +318,7 @@ export class Game {
 
   /**
    * メインループ
-   * @param p 
+   * @param p
    */
   proc(p: p5) {
     // 落下
