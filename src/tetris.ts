@@ -1,7 +1,16 @@
 import p5 from "p5";
 
+/**
+ * テトラミノを構成するブロック要素
+ */
 class Block {
+  /**
+   * ブロックのX座標
+   */
   x: number;
+  /**
+   * ブロックのY座標
+   */
   y: number;
 
   constructor(x: number, y: number) {
@@ -9,7 +18,11 @@ class Block {
     this.y = y;
   }
 
-  draw(p: p5) {
+  /**
+   * ブロックを描画する
+   * @param p 
+   */
+  draw(p: p5): void {
     p.push();
     let s = 25;
     p.rect(s * this.x, s * this.y, s, s);
@@ -17,10 +30,25 @@ class Block {
   }
 }
 
+/**
+ * テトラミノ
+ */
 class Mino {
+  /**
+   * ミノのX座標
+   */
   x: number;
+  /**
+   * ミノのY座標
+   */
   y: number;
+  /**
+   * ミノの回転数(90度単位)
+   */
   rot: number;
+  /**
+   * ミノの形
+   */
   shape: number;
 
   constructor(x: number, y: number, rot: number, shape: number) {
@@ -30,6 +58,10 @@ class Mino {
     this.shape = shape;
   }
 
+  /**
+   * ミノを構成しているブロックを演算する
+   * @returns 
+   */
   calcBlocks() {
     let blocks: Block[] = [];
     switch (this.shape) {
@@ -98,17 +130,30 @@ class Mino {
     blocks.forEach((b) => ((b.x += this.x), (b.y += this.y)));
     return blocks;
   }
-  draw(p: p5) {
+
+  /**
+   * ミノをコピーする
+   * @returns 
+   */
+  copy(): Mino {
+    return new Mino(this.x, this.y, this.rot, this.shape);
+  }
+
+  /**
+   * ミノを描画する
+   * @param p 
+   */
+  draw(p: p5): void {
     const blocks = this.calcBlocks();
     for (let b of blocks) {
       b.draw(p);
     }
   }
-  copy() {
-    return new Mino(this.x, this.y, this.rot, this.shape);
-  }
 }
 
+/**
+ * テトリスの盤面
+ */
 class Field {
   tiles: Array<number[]>;
 
@@ -138,14 +183,30 @@ class Field {
     ];
   }
 
+  /**
+   * フィールド内の１タイルを取得する
+   * @param x 
+   * @param y 
+   * @returns 
+   */
   tileAt(x: number, y: number): number {
     return this.tiles[y][x];
   }
 
-  putBlock(x: number, y: number) {
+  /**
+   * フィールドにブロックを置く
+   * @param x 
+   * @param y 
+   * @returns 
+   */
+  putBlock(x: number, y: number): number {
     return (this.tiles[y][x] = 1);
   }
 
+  /**
+   * 消去できる行インデックスを取得する
+   * @returns 
+   */
   findLineFilled(): number {
     for (let y = 0; y < 20; y++) {
       let isFilled = this.tiles[y].every((t: number) => t === 1);
@@ -154,12 +215,20 @@ class Field {
     return -1;
   }
 
+  /**
+   * 行を削除して1行詰める
+   * @param y 
+   */
   cutLine(y: number) {
     this.tiles.splice(y, 1);
     this.tiles.unshift([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
   }
 
-  draw(p: p5) {
+  /**
+   * フィールドを描画する
+   * @param p 
+   */
+  draw(p: p5): void {
     for (let y = 0; y < 21; y++) {
       for (let x = 0; x < 12; x++) {
         if (this.tileAt(x, y) === 0) continue;
@@ -169,11 +238,29 @@ class Field {
   }
 }
 
+/**
+ * テトリスのゲームロジック本体
+ */
 export class Game {
+  /**
+   * 操作中ミノ
+   */
   mino: Mino;
+  /**
+   * 操作中ミノのx座標
+   */
   minoVx: number;
+  /**
+   * 操作中ミノの回転角度
+   */
   minoVr: number;
+  /**
+   * テトリス盤面
+   */
   field: Field;
+  /**
+   * フレームカウント
+   */
   fc: number;
 
   constructor(p: p5) {
@@ -184,15 +271,30 @@ export class Game {
     this.fc = 0;
   }
 
-  static makeMino(p: p5) {
+  /**
+   * 新しいミノを生成する
+   * @param p 
+   * @returns 
+   */
+  static makeMino(p: p5): Mino {
     return new Mino(5, 2, 0, p.floor(p.random(0, 7)));
   }
 
-  static isMinoMovable(mino: Mino, field: Field) {
+  /**
+   * ミノが移動可能かを判定する
+   * @param mino 
+   * @param field 
+   * @returns 
+   */
+  static isMinoMovable(mino: Mino, field: Field): boolean {
     let blocks = mino.calcBlocks();
     return blocks.every((b) => field.tileAt(b.x, b.y) === 0);
   }
 
+  /**
+   * メインループ
+   * @param p 
+   */
   proc(p: p5) {
     // 落下
     if (this.fc % 20 === 19) {

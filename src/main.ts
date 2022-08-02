@@ -5,6 +5,16 @@ const s = (p: p5) => {
 
   let game: Game;
   
+  p.setup = function setup(): void {
+    p.createCanvas(400, 600);
+    p.background(64);
+    game = new Game(p);
+  }
+  
+  p.draw = function draw(): void {
+    game.proc(p);
+  }
+
   p.keyPressed = function keyPressed(): void {
     // Left
     if (p.keyCode === 65) game.minoVx = -1;
@@ -26,16 +36,5 @@ const s = (p: p5) => {
     // Rotate Right
     if (p.keyCode === 69) game.minoVr = 1;
   }
-  
-  p.setup = function setup(): void {
-    p.createCanvas(400, 600);
-    p.background(64);
-    game = new Game(p);
-  }
-  
-  p.draw = function draw(): void {
-    game.proc(p);
-  }
-  
 }
 new p5(s);
